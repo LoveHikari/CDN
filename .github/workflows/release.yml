@@ -1,0 +1,44 @@
+name: CDN Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-npm:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [12.x]
+    steps:
+      # check it to your workflow can access it
+      # from: https://github.com/actions/checkout
+      - name: 1. 检查main分支
+        uses: actions/checkout@master
+
+      - name: 2. 读取当前版本号
+        id: version
+        uses: ashley-taylor/read-json-property-action@latest
+        with:
+          path: ./package.json
+          property: version
+
+      - name: 3. 读取描述文件
+        id: description
+        uses: ashley-taylor/read-json-property-action@latest
+        with:
+          path: ./package.json
+          property: description
+
+      - name: 4. 创建GitHub Release
+        id: create_release
+        uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{steps.version.outputs.value}}
+          release_name: v${{steps.version.outputs.value}}
+          body: ${{steps.description.outputs.value}}
+          draft: false
+          prerelease: false
