@@ -6,11 +6,8 @@ on:
       - main
 
 jobs:
-  publish-npm:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [12.x]
     steps:
       # check it to your workflow can access it
       # from: https://github.com/actions/checkout
@@ -19,14 +16,14 @@ jobs:
 
       - name: 2. 读取当前版本号
         id: version
-        uses: ashley-taylor/read-json-property-action@latest
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
           path: ./package.json
           property: version
 
       - name: 3. 读取描述文件
         id: description
-        uses: ashley-taylor/read-json-property-action@latest
+        uses: ashley-taylor/read-json-property-action@v1.0
         with:
           path: ./package.json
           property: description
